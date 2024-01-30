@@ -1,15 +1,15 @@
 # Comrade M87 Stokes I Imaging Pipeline for EHT observations in April 2018
 
-Authors: The Event Horizon Telescope Collaboration et al.
-Date: January 18, 2024
-Primary Reference: The Event Horizon Telescope Collaboration, et al. 2024, A&A, 681, A79
-Data Product Code: 2024-D01-01
+Authors: The Event Horizon Telescope Collaboration et al. <br>
+Date: January 18, 2024  <br>
+Primary Reference: The Event Horizon Telescope Collaboration, et al. 2024, A&A, 681, A79  <br>
+Data Product Code: 2024-D01-01  <br>
 
 Brief Description:
 The pipeline reconstructs an image from uvfits files simultaneously
 released in the EHT website (data release ID: 2024-D01-01) using Comrade,
 a Bayesian modeling package, targeted for very-long-baseline interferometry (VLBI) 
-and written in the Julia1 programming language (Tiede, P., (2022). JOSS, 7(76), 4457).
+and written in the Julia programming language (Tiede, P., (2022). JOSS, 7(76), 4457).
 
 Additional References:
  - EHT Collaboration Data Portal Website:
@@ -21,7 +21,7 @@ Additional References:
 # Pre-requisites
 
 ## 1. Install Julia
-1. Instal julia using [juliaup](https://github.com/JuliaLang/juliaup)
+1. Install julia using [juliaup](https://github.com/JuliaLang/juliaup)
 2. Install Julia version 1.8.2 (or lower) using 
 ```
 juliaup add 1.8.2
