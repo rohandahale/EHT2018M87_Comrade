@@ -82,7 +82,7 @@ rng = StableRNG(123)
 load_ehtim()
 
 # Include fit functions
-include("ampcp_fit.jl")
+include("./src/ampcp_fit.jl")
 
 
 function parse_commandline()
