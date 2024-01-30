@@ -1,13 +1,37 @@
 """
+Comrade M87 Stokes I Imaging Pipeline for EHT observations in April 2018
+
+Authors: The Event Horizon Telescope Collaboration et al.
+Date: January 18, 2024
+Primary Reference: The Event Horizon Telescope Collaboration, et al. 2024, A&A, 681, A79
+Data Product Code: 2024-D01-01
+
+Brief Description:
+The pipeline reconstructs an image from uvfits files simultaneously
+released in the EHT website (data release ID: 2024-D01-01) using Comrade,
+a Bayesian modeling package, targeted for very-long-baseline interferometry (VLBI) 
+and written in the Julia1 programming language (Tiede, P., (2022). JOSS, 7(76), 4457).
+
+To run the pipeline, specify the input uvfits data file name without the path. 
+It is assumed that all uvfits are in "./data/" folder. Additional you have to specify,
+epoch as "3644" (April 21) or "3647" (April 25) and band from one of "b1", "b2, "b3", "b4".
+Epoch and Band is required only to choose the hyperparameters like number of pixels and field
+of fiew which depend on the uv-coverage.
+
+Example call:
+julia comrade_2018m87_pipeline.jl --uvfits "hops_3644_M87_b3.netcal_10s_StokesI.uvfits" --epoch "3644" --band "b3"
+
+Additional References:
+ - EHT Collaboration Data Portal Website:
+   https://eventhorizontelescope.org/for-astronomers/data
+ - The Event Horizon Telescope Collaboration, et al. 2024, A&A, 681, A79
+ - Comrade: https://github.com/ptiede/Comrade.jl 
+ - Tiede, P., (2022), Journal of Open Source Software, 7(76), 4457, https://doi.org/10.21105/joss.04457
+"""
+
+"""
 Julia Version 1.8.2
 Commit 36034abf260 (2022-09-29 15:21 UTC)
-Platform Info:
-  OS: Linux (x86_64-linux-gnu)
-  CPU: 64 × AMD EPYC 7502P 32-Core Processor
-  WORD_SIZE: 64
-  LIBM: libopenlibm
-  LLVM: libLLVM-13.0.1 (ORCJIT, znver2)
-  Threads: 1 on 64 virtual cores
 
   Status `~/Project.toml`
   [c7e460c6] ArgParse v1.1.4
@@ -40,7 +64,10 @@ but those with ⌅ are restricted by compatibility constraints from upgrading.
 To see why use `status --outdated`
 """
 
+# Activate the project environment and load the packages
 using Pkg;Pkg.activate(@__DIR__)
+#When runing this script for the first time
+# Pkg.instantiate()
 using ArgParse
 using Comrade
 using Distributions
@@ -58,7 +85,7 @@ using Pathfinder
 using LinearAlgebra
 using Serialization
 using BenchmarkTools
-
+# Plotting Setup
 import CairoMakie as CM
 using MathTeXEngine # required for texfont
 textheme = CM.Theme(fonts=(; regular=texfont(:text),
@@ -67,44 +94,59 @@ textheme = CM.Theme(fonts=(; regular=texfont(:text),
                         bold_italic=texfont(:bolditalic)))
 ENV["GKSwstype"] = "nul"
 using Plots
-
 using Tables
 using Printf
-using PyCall
 using Measurements
 using TypedTables
 using MCMCDiagnosticTools
-
+#For reproducibility
 using StableRNGs
 rng = StableRNG(123)
 
+#Load ehtim
+"""
+Comrade uses python library eht-imaging (https://github.com/achael/eht-imaging) to
+load the uvfits data. We use PyCall.jl to access our pre-installed python packages.
 
+When runing this script for the first time:
+1. Start julia in terminal
+2. ENV["PYTHON"]="<your python path>"
+3. using Pkg;Pkg.activate(@__DIR__)
+4. Pkg.build("PyCall")
+5. Restart julia
+"""
+
+#Load eht-imaging
+using PyCall
 load_ehtim()
 
-# Include fit functions
+# Include our fit functions
 include("./src/ampcp_fit.jl")
 
-
+#Parsing arguments function
 function parse_commandline()
     s = ArgParseSettings()
 
     @add_arg_table! s begin
         "--uvfits"
-            help = "uvfits file to read"
+            help = "uvfits file name to read"
             arg_type = String
             required = true
         "--epoch"
-             help = "Epoch 3644 or 3647 as string"
+             help = "Epoch 3644 or 3647 as a string"
              arg_type = String
              default = "3644"
+             required = true
         "--band"
-             help = "Band name b1,b2,b3,b4 as string"
+             help = "Band name b1,b2,b3,b4 as a string"
              arg_type = String
              default = "b3"
+             required = true
     end
     return parse_args(s)
 end
 
+# Main function
 function main()
     #Parse the command line arguments
     parsed_args = parse_commandline()
@@ -117,9 +159,14 @@ function main()
     println("epoch: $epoch")
     println("band: $band")
     
+    # Set output directories
     outbase = joinpath(@__DIR__, "results", chop(file,tail=7), chop(file,tail=7))
     outdir = joinpath(@__DIR__, "results", chop(file,tail=7), "samples", chop(file,tail=7))
     
+    # hyperparameters for different uv-coverages
+    # nx = number of pixels in x-direction
+    # fovx = field of view in uas in x-direction
+    # fovy = field of view in uas in y-direction
     if epoch=="3644"
         if band=="b3" || band=="b4"
             nx=12 
@@ -142,6 +189,7 @@ function main()
         end
     end
     
+    # Make directories for results
     if !isdir(joinpath(@__DIR__,"results"))
         mkdir(joinpath(@__DIR__,"results"))
         if !isdir(joinpath(@__DIR__,"results", chop(file,tail=7)))
