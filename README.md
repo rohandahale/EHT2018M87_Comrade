@@ -28,3 +28,8 @@ using DrWatson
 @quickactivate "EHT2018M87_Comrade"
 ```
 which auto-activate the project and enable local path handling from DrWatson.
+
+# PyCal Settings
+1. ENV["PYTHON"]="<python path>"
+2. Pkg.build("PyCall")
+3. Restart julia
