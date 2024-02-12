@@ -71,7 +71,7 @@ end
 # Normal(0.0, 0.1) == gains with no offset but 10% deviations since σ=0.1
 # Note that it kept different for different band because GLT is only for bands 3 & 4.
 function create_calib_priors(damp,epoch,band)
-    if epoch=="111"
+    if epoch==111
         if band=="b3" || band=="b4"
             distamp = (AA = Normal(0.0, 0.1),
                     AX = Normal(0.0, 0.1),

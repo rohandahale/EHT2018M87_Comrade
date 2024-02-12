@@ -129,13 +129,13 @@ function parse_commandline()
 
     @add_arg_table! s begin
         "--uvfits"
-            help = "uvfits file name to read"
+            help = "path of uvfits file to read"
             arg_type = String
             required = true
         "--epoch"
-             help = "111 or 115 as a string"
-             arg_type = String
-             default = "111"
+             help = "111 or 115"
+             arg_type = Int
+             default = 111
              required = true
         "--band"
              help = "Band name b1,b2,b3,b4 as a string"
@@ -160,14 +160,14 @@ function main()
     println("band: $band")
     
     # Set output directories
-    outbase = joinpath(@__DIR__, "results", chop(file,tail=7), chop(file,tail=7))
-    outdir = joinpath(@__DIR__, "results", chop(file,tail=7), "samples", chop(file,tail=7))
+    outbase = joinpath(@__DIR__, "results", chop(basename(file),tail=7), chop(basename(file),tail=7))
+    outdir = joinpath(@__DIR__, "results", chop(basename(file),tail=7), "samples", chop(basename(file),tail=7))
     
     # hyperparameters for different uv-coverages
     # nx = number of pixels in x-direction
     # fovx = field of view in uas in x-direction
     # fovy = field of view in uas in y-direction
-    if epoch=="111"
+    if epoch==111
         if band=="b3" || band=="b4"
             nx=12 
             fovx=90.0
@@ -192,16 +192,16 @@ function main()
     # Make directories for results
     if !isdir(joinpath(@__DIR__,"results"))
         mkdir(joinpath(@__DIR__,"results"))
-        if !isdir(joinpath(@__DIR__,"results", chop(file,tail=7)))
-            mkdir(joinpath(@__DIR__,"results", chop(file,tail=7)))
-            mkdir(joinpath(@__DIR__,"results", chop(file,tail=7), "samples"))
+        if !isdir(joinpath(@__DIR__,"results", chop(basename(file),tail=7)))
+            mkdir(joinpath(@__DIR__,"results", chop(basename(file),tail=7)))
+            mkdir(joinpath(@__DIR__,"results", chop(basename(file),tail=7), "samples"))
         end
     end
     
     println("Starting fit")
-    image_data("./data/"*file, epoch, band, outbase, outdir; nx=nx, fovx=fovx, fovy=fovy)
+    image_data(file, epoch, band, outbase, outdir; nx=nx, fovx=fovx, fovy=fovy)
 
-    done = joinpath(@__DIR__, "results", chop(file,tail=7))
+    done = joinpath(@__DIR__, "results", chop(basename(file),tail=7))
     println("Done! Check $done folder")
     return 0
 end

@@ -77,5 +77,5 @@ of fiew which depend on the uv-coverage.
 Example call:
 
 ```
-julia comrade_2018m87_pipeline.jl --uvfits "hops_3644_M87_b3.netcal_10s_StokesI.uvfits" --epoch "3644" --band "b3"
+julia comrade_2018m87_pipeline.jl --uvfits "./data/L2V1_M87_2018_111_b3_hops_netcal_10s_StokesI.uvfits" --epoch 111 --band "b3"
 ```
