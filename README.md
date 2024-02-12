@@ -70,7 +70,7 @@ julia> Pkg.build("PyCall")
 # Running the pipeline
 To run the pipeline, specify the input uvfits data file name without the path. 
 It is assumed that all uvfits are in "./data/" folder. Additional you have to specify,
-epoch as "3644" (April 21) or "3647" (April 25) and band from one of "b1", "b2, "b3", "b4".
+epoch as "111" (April 21) or "115" (April 25) and band from one of "b1", "b2, "b3", "b4".
 Epoch and Band is required only to choose the hyperparameters like number of pixels and field
 of fiew which depend on the uv-coverage.
 
