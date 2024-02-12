@@ -20,7 +20,7 @@ Additional References:
 
 # Pre-requisites
 
-## 1. Install Julia
+## 1. Julia (<1.9)
 1. Install julia using [juliaup](https://github.com/JuliaLang/juliaup)
 2. Install Julia version 1.8.2 (or lower) using 
 ```
@@ -28,7 +28,7 @@ juliaup add 1.8.2
 juliaup default 1.8.2
 ```
 
-## 2. Install ehtim
+## 2. eht-imaging (1.2.4)
 Follow the instructions here: https://github.com/achael/eht-imaging to install eht-imaging.
 
 ## 3. Clone this repository

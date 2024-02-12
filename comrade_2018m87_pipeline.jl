@@ -133,9 +133,9 @@ function parse_commandline()
             arg_type = String
             required = true
         "--epoch"
-             help = "Epoch 3644 or 3647 as a string"
+             help = "111 or 115 as a string"
              arg_type = String
-             default = "3644"
+             default = "111"
              required = true
         "--band"
              help = "Band name b1,b2,b3,b4 as a string"
@@ -167,7 +167,7 @@ function main()
     # nx = number of pixels in x-direction
     # fovx = field of view in uas in x-direction
     # fovy = field of view in uas in y-direction
-    if epoch=="3644"
+    if epoch=="111"
         if band=="b3" || band=="b4"
             nx=12 
             fovx=90.0
